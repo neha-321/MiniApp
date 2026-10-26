@@ -39,8 +39,8 @@ function App() {
       ...previousTasks,
       newTask,
     ]);
-    // setTitle("");
-    // setDescription("");
+    setTitle("");
+    setDescription("");
   }
   
   return (

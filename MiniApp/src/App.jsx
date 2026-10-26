@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import { useForm } from "react-hook-form";
 
 const initialTasks = [
 {
@@ -19,53 +17,75 @@ description: "Learn how React manages state.",
 
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const {
+      register,
+      handleSubmit,
+      reset,
+      formState: { errors, isSubmitting },
+    } = useForm();
 
-    if (!title.trim() || !description.trim()) {
-    alert("Please enter both title and description.");
-    return;
-    }
+  function onSubmit(data) {
 
     const newTask = {
       id: Date.now(),
-      title: title.trim(),
-      description: description.trim(),
+      title: data.title.trim(),
+      description: data.description.trim(),
     };
     setTasks((previousTasks) => [
       ...previousTasks,
       newTask,
     ]);
-    setTitle("");
-    setDescription("");
+    reset();
   }
   
   return (
     <div className="App">
       <h1>Task Notes</h1>
-      <form className="task-form" onSubmit={handleSubmit}>
+      <form className="task-form" onSubmit={handleSubmit(onSubmit)}>
         <h2>Add a New Task</h2>
 
-        <input
-        type="text"
-        placeholder="Enter task title"
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
+         <input
+          type="text"
+          placeholder="Enter task title"
+          {...register("title", {
+            required: "Task title is required",
+            maxLength: {
+              value: 100,
+              message: "Title cannot exceed 100 characters",
+            },
+            validate: (value) =>
+              value.trim().length > 0 ||
+              "Title cannot be empty",
+          })}
         />
+
+        {errors.title && (
+          <p className="error">{errors.title.message}</p>
+        )}
 
         <textarea
-        placeholder="Enter task description"
-        value={description}
-        onChange={(event) =>
-        setDescription(event.target.value)
-        }
-        rows="3"
+          placeholder="Enter task description"
+          rows={3}
+          {...register("description", {
+            required: "Task description is required",
+            maxLength: {
+              value: 500,
+              message: "Description cannot exceed 500 characters",
+            },
+            validate: (value) =>
+              value.trim().length > 0 ||
+              "Description cannot be empty",
+          })}
         />
 
-        <button type="submit">Add Task</button>
+        {errors.description && (
+          <p className="error">
+            {errors.description.message}
+          </p>
+        )}
+
+        <button type="submit" disabled ={isSubmitting}>{isSubmitting ? "Adding task" : "Add task"}</button>
       </form>
       <section className="task-list">
         <h2>My Tasks ({tasks.length})</h2>

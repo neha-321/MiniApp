@@ -38,6 +38,12 @@ function App() {
     ]);
     reset();
   }
+
+  function deleteTask(id) {
+    setTasks((prevTasks) =>
+      prevTasks.filter((task) => task.id !== id)
+    );
+  }
   
   return (
     <div className="App">
@@ -97,6 +103,13 @@ function App() {
         <div className="task-card" key={task.id}>
         <h3>{task.title}</h3>
         <p>{task.description}</p>
+        <button
+          type="button"
+          className="delete-button"
+          onClick={() => deleteTask(task.id)}
+        >
+          Delete
+        </button>
         </div>
         ))
         )}

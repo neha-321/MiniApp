@@ -87,7 +87,7 @@ function Tasks({ tasks, setTasks }) {
         <h2>My Tasks ({tasks.length})</h2>
 
         {tasks.length === 0 ? (
-          <p>No tasks yet. Add your first task!</p>
+          <p>No tasks added yet. Add your first task!</p>
         ) : (
           tasks.map((task) => (
             <div className="task-card" key={task.id}>
